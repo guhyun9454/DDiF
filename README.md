@@ -70,6 +70,6 @@ This work is heavily built upon the code from
  - *Dataset condensation with gradient matching*, [Paper](https://arxiv.org/abs/2006.05929), [Code](https://github.com/VICO-UoE/DatasetCondensation)
  - *Dataset condensation with distribution matching*, [Paper](https://arxiv.org/abs/2110.04181), [Code](https://github.com/VICO-UoE/DatasetCondensation)
  - *Dataset distillation by matching training trajectories*, [Paper](https://arxiv.org/abs/2203.11932), [Code](https://github.com/georgecazenavette/mtt-distillation)
- - *Frequency Domain-based Dataset Distillation*, [Paper](XXX), [Code](https://github.com/sdh0818/FreD/tree/main)
+ - *Frequency Domain-based Dataset Distillation*, [Paper](https://arxiv.org/abs/2311.08819), [Code](https://github.com/sdh0818/FreD/tree/main)
  - *Pytorch implementation of SIREN*, [Code](https://github.com/lucidrains/siren-pytorch/tree/master)
  - *Dancing with Still Images: Video Distillation via Static-Dynamic Disentanglement*, [Paper](https://arxiv.org/abs/2312.00362), [Code](https://github.com/yuz1wan/video_distillation)
