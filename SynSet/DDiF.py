@@ -248,7 +248,7 @@ class Siren(nn.Module):
                  w0_initial=30., use_bias=True, final_activation=None):
         super().__init__()
         #print siren info
-        print(f"SIREN: {dim_in} -> {dim_hidden} -> {dim_out} | {num_layers} layers | w0: {w0} | w0_initial: {w0_initial}")
+        # print(f"SIREN: {dim_in} -> {dim_hidden} -> {dim_out} | {num_layers} layers | w0: {w0} | w0_initial: {w0_initial}")
         layers = []
         for ind in range(num_layers):
             is_first = ind == 0
