@@ -2,3 +2,4 @@ einops==0.8.1          # tensor rearrangements
 kornia==0.7.3          # differentiable image ops
 matplotlib==3.7.5      # plotting (used for visualization/saving results)
 tqdm==4.67.1           # progress bar
+scipy
