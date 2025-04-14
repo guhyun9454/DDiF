@@ -38,7 +38,7 @@ def main():
 
     ### Basic ###
     parser.add_argument('--seed', type=int, default=0)
-    parser.add_argument('--sh_file', type=str)
+    # parser.add_argument('--sh_file', type=str)
     parser.add_argument('--FLAG', type=str, default="")
     parser.add_argument('--save_path', type=str, default="./results")
 
@@ -79,7 +79,7 @@ def main():
         os.makedirs(args.save_path)
         os.makedirs(f"{args.save_path}/imgs")
 
-    shutil.copy(f"./scripts/{args.sh_file}", f"{args.save_path}/{args.sh_file}")
+    # shutil.copy(f"./scripts/{args.sh_file}", f"{args.save_path}/{args.sh_file}")
     args.log_path = f"{args.save_path}/log.txt"
 
     eval_it_pool = np.arange(0, args.Iteration+1, 2000).tolist() if args.eval_mode == 'S' or args.eval_mode == 'SS' else [args.Iteration] # The list of iterations when we evaluate models and record results.
