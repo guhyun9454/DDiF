@@ -1,6 +1,6 @@
 cd ..
 cuda_id=0
-dst="ImageNet"
+dst="CIFAR10"
 subset="nette"
 res=128
 net="ConvNetD5"
