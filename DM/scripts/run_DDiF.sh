@@ -1,8 +1,8 @@
 cd ..
 cuda_id=0
-dst="MNIST"
+dst="CIFAR100"
 subset="nette"
-res=128
+res=32
 net="ConvNetD5"
 ipc=1
 sh_file="run_DDiF.sh"
