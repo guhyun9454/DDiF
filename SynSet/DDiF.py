@@ -76,7 +76,7 @@ class DDiF():
         #     if self.args.zca:
         #         initialized_synset_path = f"{initialized_synset_path[:-3]}_ZCA.pt"
         initialized_synset_path = f"{self.args.save_path}/initialized_synset.pt"
-        
+
         if os.path.isfile(initialized_synset_path):
             save_and_print(self.log_path, f"\n Load from >>>>> {initialized_synset_path} \n")
 
@@ -247,6 +247,8 @@ class Siren(nn.Module):
     def __init__(self, dim_in, dim_hidden, dim_out, num_layers, w0=30.,
                  w0_initial=30., use_bias=True, final_activation=None):
         super().__init__()
+        #print siren info
+        print(f"SIREN: {dim_in} -> {dim_hidden} -> {dim_out} | {num_layers} layers | w0: {w0} | w0_initial: {w0_initial}")
         layers = []
         for ind in range(num_layers):
             is_first = ind == 0
