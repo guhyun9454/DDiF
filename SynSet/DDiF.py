@@ -69,13 +69,14 @@ class DDiF():
         self.nf_syn = self.nf_syn.to(self.device)
 
         # Check if there is initialized neural fields
-        initialized_synset_path = f"../initialized_synset/{self.args.dataset}_{self.args.subset}_{self.args.res}_{self.args.model}_{self.args.ipc}ipc_{self.args.dipc}dipc/" \
-                                  f"init_{self.dim_in}_{self.num_layers}_{self.layer_size}_{self.dim_out}___{self.w0_initial},{self.w0}___{self.epochs_init},{self.lr_nf_init:.0e}_.pt"
+        # initialized_synset_path = f"../initialized_synset/{self.args.dataset}_{self.args.subset}_{self.args.res}_{self.args.model}_{self.args.ipc}ipc_{self.args.dipc}dipc/" \
+        #                           f"init_{self.dim_in}_{self.num_layers}_{self.layer_size}_{self.dim_out}___{self.w0_initial}_{self.w0}___{self.epochs_init}_{self.lr_nf_init:.0e}_.pt"
 
-        if hasattr(self.args, "zca"):
-            if self.args.zca:
-                initialized_synset_path = f"{initialized_synset_path[:-3]}_ZCA.pt"
-
+        # if hasattr(self.args, "zca"):
+        #     if self.args.zca:
+        #         initialized_synset_path = f"{initialized_synset_path[:-3]}_ZCA.pt"
+        initialized_synset_path = f"{self.args.save_path}/initialized_synset.pt"
+        
         if os.path.isfile(initialized_synset_path):
             save_and_print(self.log_path, f"\n Load from >>>>> {initialized_synset_path} \n")
 
