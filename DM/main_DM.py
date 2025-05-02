@@ -20,6 +20,8 @@ from SynSet import *
 from tqdm import tqdm
 
 def main():
+    start_time = time.time()  # 시작 시간 기록
+    
     parser = argparse.ArgumentParser(description='Parameter Processing')
     parser.add_argument('--method', type=str, default='DM', help='DC/DSA/DM')
     parser.add_argument('--dataset', type=str, default='CIFAR10', help='dataset')
@@ -205,6 +207,18 @@ def main():
 
             if it%10 == 0:
                 save_and_print(args.log_path, '%s iter = %04d, loss = %.4f' % (get_time(), it, loss_avg))
+
+    end_time = time.time()  # 종료 시간 기록
+    total_time = end_time - start_time
+    
+    # Convert seconds to hours, minutes, seconds
+    hours, remainder = divmod(total_time, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    time_format = f"{int(hours):02d}:{int(minutes):02d}:{int(seconds):02d}"
+    
+    save_and_print(args.log_path, f'Total training time: {time_format} (h:m:s)')
+    print(f'Total training time: {time_format} (h:m:s)')
+    return total_time
 
 if __name__ == '__main__':
     main()
