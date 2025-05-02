@@ -42,7 +42,7 @@ def main():
     parser.add_argument('--FLAG', type=str, default="")
     parser.add_argument('--save_path', type=str, default="./results")
 
-    parser.add_argument('--batch_syn', type=int)
+    parser.add_argument('--batch_syn', type=int, default=0)
     parser.add_argument('--dipc', type=int, default=0)
     parser.add_argument('--res', type=int)
 
