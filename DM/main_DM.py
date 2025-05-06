@@ -33,8 +33,7 @@ def main():
     parser.add_argument('--epoch_eval_train', type=int, default=1000, help='epochs to train a model with synthetic data') # it can be small for speeding up with little performance drop
     parser.add_argument('--Iteration', type=int, default=20000, help='training iterations')
     parser.add_argument('--lr_net', type=float, default=0.01, help='learning rate for updating network parameters')
-    parser.add_argument('--batch_real', type=int, default=256, help='batch size for real data')
-    parser.add_argument('--batch_train', type=int, default=256, help='batch size for training networks')
+    parser.add_argument('--batch_size', type=int, default=256, help='batch size for real, training, and testing')
     parser.add_argument('--dsa_strategy', type=str, default='color_crop_cutout_flip_scale_rotate', help='differentiable Siamese augmentation strategy')
     parser.add_argument('--data_path', type=str, default='../data', help='dataset path')
 
@@ -66,6 +65,11 @@ def main():
     set_seed(args.seed)
     args = load_default(args)
 
+    # 기존 batch_real, batch_train을 args.batch_size에서 복제
+    args.batch_real = args.batch_size
+    args.batch_train = args.batch_size
+    args.test_batch = args.batch_size
+    
     # args.outer_loop, args.inner_loop = get_loops(args.ipc)
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
     args.dsa_param = ParamDiffAug()
@@ -135,6 +139,8 @@ def main():
                         image_syn_eval, label_syn_eval = synset.get(need_copy=True)
                         _, _, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args)
                         accs_test.append(acc_test)
+                        # 메모리 정리
+                        torch.cuda.empty_cache()
                     accs_test = np.array(accs_test)
                     acc_test_mean = np.mean(accs_test)
                     acc_test_std = np.std(accs_test)
