@@ -36,6 +36,7 @@ def main():
     parser.add_argument('--batch_size', type=int, default=256, help='batch size for real, training, and testing')
     parser.add_argument('--dsa_strategy', type=str, default='color_crop_cutout_flip_scale_rotate', help='differentiable Siamese augmentation strategy')
     parser.add_argument('--data_path', type=str, default='../data', help='dataset path')
+    parser.add_argument('--num_workers', type=int, default=4, help='number of workers for data loading')
 
     ### Basic ###
     parser.add_argument('--seed', type=int, default=0)
