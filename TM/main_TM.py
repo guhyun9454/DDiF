@@ -377,7 +377,7 @@ if __name__ == '__main__':
 
     ### Basic ###
     parser.add_argument('--seed', type=int, default=0)
-    parser.add_argument('--sh_file', type=str)
+    # parser.add_argument('--sh_file', type=str)
     parser.add_argument('--FLAG', type=str, default="")
     parser.add_argument('--save_path', type=str, default="./results")
 
@@ -406,18 +406,18 @@ if __name__ == '__main__':
     set_seed(args.seed)
     args = load_default(args)
 
-    sub_save_path_1 = f"{args.dataset}_{args.subset}_{args.res}_{args.model}_{args.ipc}ipc_{args.dipc}dipc"
-    sub_save_path_2 = f"{args.syn_steps}_{args.expert_epochs}_{args.max_start_epoch}_{args.lr_lr:.0e}_{args.lr_teacher:.0e}#"\
-                      f"{args.batch_syn}_({args.dim_in},{args.num_layers},{args.layer_size},{args.dim_out})_({args.w0_initial},{args.w0})_({args.epochs_init},{args.lr_nf_init:.0e})_{args.lr_nf:.0e}"
-    if args.zca:
-        sub_save_path_2 += f"_ZCA"
+    # sub_save_path_1 = f"{args.dataset}_{args.subset}_{args.res}_{args.model}_{args.ipc}ipc_{args.dipc}dipc"
+    # sub_save_path_2 = f"{args.syn_steps}_{args.expert_epochs}_{args.max_start_epoch}_{args.lr_lr:.0e}_{args.lr_teacher:.0e}#"\
+    #                  f"{args.batch_syn}_({args.dim_in},{args.num_layers},{args.layer_size},{args.dim_out})_({args.w0_initial},{args.w0})_({args.epochs_init},{args.lr_nf_init:.0e})_{args.lr_nf:.0e}"
+    # if args.zca:
+    #     sub_save_path_2 += f"_ZCA"
 
-    args.save_path = f"{args.save_path}/{sub_save_path_1}/{sub_save_path_2}#{args.FLAG}"
+    # args.save_path = f"{args.save_path}/{sub_save_path_1}/{sub_save_path_2}#{args.FLAG}"
     if not os.path.exists(args.save_path):
         os.makedirs(args.save_path)
         os.makedirs(f"{args.save_path}/imgs")
 
-    shutil.copy(f"./scripts/{args.sh_file}", f"{args.save_path}/{args.sh_file}")
+    # sh 파일 복사 부분 제거
     args.log_path = f"{args.save_path}/log.txt"
 
     main(args)
