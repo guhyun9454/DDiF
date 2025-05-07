@@ -95,8 +95,8 @@ def main(args):
 
     expert_dir = os.path.join(args.buffer_path, args.dataset)
     if args.dataset == "ImageNet":
-        subset_names = {"nette": "imagenette", "woof": "imagewoof", "fruits": "imagefruit", "yellow": "imageyellow", "cats": "imagemeow", "birds": "imagesquawk"}
-        expert_dir = os.path.join(expert_dir, subset_names[args.subset])
+        # subset_names = {"nette": "imagenette", "woof": "imagewoof", "fruits": "imagefruit", "yellow": "imageyellow", "cats": "imagemeow", "birds": "imagesquawk"}
+        expert_dir = os.path.join(expert_dir, args.subset)
     if not args.zca:
         expert_dir += "_NO_ZCA"
     expert_dir = os.path.join(expert_dir, args.model)
