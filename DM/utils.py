@@ -210,10 +210,10 @@ def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None
         dst_train = datasets.ImageNet(data_path, split="train", transform=transform) # no augmentation
         dst_train_dict = {c : torch.utils.data.Subset(dst_train, np.squeeze(np.argwhere(np.equal(dst_train.targets, config.img_net_classes[c])))) for c in range(len(config.img_net_classes))}
         dst_train = torch.utils.data.Subset(dst_train, np.squeeze(np.argwhere(np.isin(dst_train.targets, config.img_net_classes))))
-        loader_train_dict = {c : torch.utils.data.DataLoader(dst_train_dict[c], batch_size=batch_size, shuffle=True, num_workers=args.num_workers) for c in range(len(config.img_net_classes))}
+        loader_train_dict = {c : torch.utils.data.DataLoader(dst_train_dict[c], batch_size=batch_size, shuffle=True, num_workers=16) for c in range(len(config.img_net_classes))}
         dst_test = datasets.ImageNet(data_path, split="val", transform=transform)
         dst_test = torch.utils.data.Subset(dst_test, np.squeeze(np.argwhere(np.isin(dst_test.targets, config.img_net_classes))))
-        for c in range(len(config.img_net_classes)):    
+        for c in range(len(config.img_net_classes)):
             dst_test.dataset.targets[dst_test.dataset.targets == config.img_net_classes[c]] = c
             dst_train.dataset.targets[dst_train.dataset.targets == config.img_net_classes[c]] = c
         save_and_print(args.log_path, dst_test.dataset)
@@ -269,7 +269,7 @@ def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None
 
         args.zca_trans = zca
 
-    testloader = torch.utils.data.DataLoader(dst_test, batch_size=args.test_batch, shuffle=False, num_workers=args.num_workers)
+    testloader = torch.utils.data.DataLoader(dst_test, batch_size=args.test_batch, shuffle=False, num_workers=0)
 
     return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv
 
@@ -461,7 +461,7 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
     criterion = nn.CrossEntropyLoss().to(args.device)
 
     dst_train = TensorDataset(images_train, labels_train)
-    trainloader = torch.utils.data.DataLoader(dst_train, batch_size=args.batch_train, shuffle=True, num_workers=args.num_workers)
+    trainloader = torch.utils.data.DataLoader(dst_train, batch_size=args.batch_train, shuffle=True, num_workers=0)
 
     start = time.time()
     acc_train_list = []
