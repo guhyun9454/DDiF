@@ -353,7 +353,7 @@ def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None
 
         args.zca_trans = zca
 
-    testloader = torch.utils.data.DataLoader(dst_test, batch_size=128, shuffle=False, num_workers=0)
+    testloader = torch.utils.data.DataLoader(dst_test, batch_size=args.test_batch, shuffle=False, num_workers=0)
 
     return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv
 
@@ -491,39 +491,41 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug):
     if args.dataset == "ImageNet":
         class_map = {x: i for i, x in enumerate(config.img_net_classes)}
 
-    if mode == 'train':
-        net.train()
-    else:
-        net.eval()
-
-    for i_batch, datum in enumerate(dataloader):
-        img = datum[0].float().to(args.device)
-        lab = datum[1].long().to(args.device)
-
-        if aug:
-            if args.dsa:
-                img = DiffAugment(img, args.dsa_strategy, param=args.dsa_param)
-            else:
-                img = augment(img, args.dc_aug_param, device=args.device)
-
-        if args.dataset == "ImageNet" and mode != "train":
-            lab = torch.tensor([class_map[x.item()] for x in lab]).to(args.device)
-
-        n_b = lab.shape[0]
-
-        output = net(img)
-        loss = criterion(output, lab)
-
-        acc = np.sum(np.equal(np.argmax(output.cpu().data.numpy(), axis=-1), lab.cpu().data.numpy()))
-
-        loss_avg += loss.item()*n_b
-        acc_avg += acc
-        num_exp += n_b
-
+    context = torch.no_grad() if mode != 'train' else torch.enable_grad()
+    with context:
         if mode == 'train':
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+            net.train()
+        else:
+            net.eval()
+
+        for i_batch, datum in enumerate(dataloader):
+            img = datum[0].float().to(args.device)
+            lab = datum[1].long().to(args.device)
+
+            if aug:
+                if args.dsa:
+                    img = DiffAugment(img, args.dsa_strategy, param=args.dsa_param)
+                else:
+                    img = augment(img, args.dc_aug_param, device=args.device)
+
+            if args.dataset == "ImageNet" and mode != "train":
+                lab = torch.tensor([class_map[x.item()] for x in lab]).to(args.device)
+
+            n_b = lab.shape[0]
+
+            output = net(img)
+            loss = criterion(output, lab)
+
+            acc = np.sum(np.equal(np.argmax(output.cpu().data.numpy(), axis=-1), lab.cpu().data.numpy()))
+
+            loss_avg += loss.item()*n_b
+            acc_avg += acc
+            num_exp += n_b
+
+            if mode == 'train':
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
 
     loss_avg /= num_exp
     acc_avg /= num_exp
@@ -565,6 +567,9 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
 
     save_and_print(args.log_path, '%s Evaluate_%02d: epoch = %04d train time = %d s train loss = %.6f train acc = %.4f, test acc = %.4f' % (get_time(), it_eval, Epoch, int(time_train), loss_train, acc_train, acc_test))
 
+    # 메모리 정리
+    torch.cuda.empty_cache()
+    
     if return_loss:
         return net, acc_train_list, acc_test, loss_train_list, loss_test
     else:

@@ -33,7 +33,7 @@ def main(args):
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     eval_it_pool = np.arange(0, args.Iteration + 1, args.eval_it).tolist()
-    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv = get_dataset(args.dataset, args.data_path, args.batch_real, args.subset, args=args)
+    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv = get_dataset(args.dataset, args.data_path, args.batch_size, args.subset, args=args)
     args.channel, args.im_size, args.num_classes, args.mean, args.std = channel, im_size, num_classes, mean, std
     model_eval_pool = get_eval_pool(args.eval_mode, args.model, args.model)
 
@@ -157,6 +157,8 @@ def main(args):
                     args.lr_net = syn_lr.item()
                     _, _, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args)
                     accs_test.append(acc_test)
+                    # 메모리 정리
+                    torch.cuda.empty_cache()
                 accs_test = np.array(accs_test)
                 acc_test_mean = np.mean(accs_test)
                 acc_test_std = np.std(accs_test)
@@ -362,8 +364,7 @@ if __name__ == '__main__':
     parser.add_argument('--epoch_eval_train', type=int, default=1000, help='epochs to train a model with synthetic data')
     parser.add_argument('--Iteration', type=int, default=15000, help='how many distillation steps to perform')
     parser.add_argument('--lr_init', type=float, default=0.01, help='how to init lr (alpha)')
-    parser.add_argument('--batch_real', type=int, default=256, help='batch size for real data')
-    parser.add_argument('--batch_train', type=int, default=256, help='batch size for training networks')
+    parser.add_argument('--batch_size', type=int, default=256, help='batch size for real, training, and testing')
     parser.add_argument('--dsa', type=str, default='True', choices=['True', 'False'], help='whether to use differentiable Siamese augmentation.')
     parser.add_argument('--dsa_strategy', type=str, default='color_crop_cutout_flip_scale_rotate', help='differentiable Siamese augmentation strategy')
     parser.add_argument('--data_path', type=str, default='../data', help='dataset path')
@@ -405,6 +406,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
     set_seed(args.seed)
     args = load_default(args)
+
+    # 기존 batch_real, batch_train을 args.batch_size에서 복제
+    args.batch_real = args.batch_size
+    args.batch_train = args.batch_size
+    args.test_batch = args.batch_size
 
     # sub_save_path_1 = f"{args.dataset}_{args.subset}_{args.res}_{args.model}_{args.ipc}ipc_{args.dipc}dipc"
     # sub_save_path_2 = f"{args.syn_steps}_{args.expert_epochs}_{args.max_start_epoch}_{args.lr_lr:.0e}_{args.lr_teacher:.0e}#"\
